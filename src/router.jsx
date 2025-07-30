@@ -1,4 +1,3 @@
-// src/router.jsx
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Upload from './pages/upload';
 import Players from './pages/players';
@@ -9,6 +8,7 @@ function AppRouter() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Upload />} />
         <Route path="/upload" element={<Upload />} />
         <Route path="/player" element={<Players />} />
         <Route path="/crowd" element={<Crowds />} />
