@@ -1,23 +1,30 @@
-import { useEffect, useState } from 'react';
-import Papa from 'papaparse';
+import { useEffect, useState } from "react";
+import { api } from "../api";
 
-function useStatsData() {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function useStatsData() {
+  const [data, setData] = useState(null);
 
   useEffect(() => {
-    Papa.parse('/data/stats.csv', {
-      download: true,
-      header: true,
-      dynamicTyping: true,
-      complete: (results) => {
-        setData(results.data);
-        setLoading(false);
+    let interval;
+
+    async function fetchMetrics() {
+      try {
+        const metrics = await api.getMetrics();
+        // simulate dynamic updates
+        metrics.cpu = Math.floor(Math.random() * 100);
+        metrics.memory = Math.floor(Math.random() * 100);
+        metrics.uptime += 5;
+        setData(metrics);
+      } catch (err) {
+        console.error("Failed to fetch metrics:", err);
       }
-    });
+    }
+
+    fetchMetrics();
+    interval = setInterval(fetchMetrics, 5000);
+
+    return () => clearInterval(interval);
   }, []);
 
-  return { data, loading };
+  return data;
 }
-
-export default useStatsData;
